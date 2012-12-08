@@ -46,19 +46,20 @@ class ImageFileDB < FileDB
 
   def uniqueFile(path)
     pattern = /^(\d\d\d\d-\d\d-\d\d \d\d\.\d\d\.\d\d)(-([0-9]*))*(\.\w+)$/
-    path = File.basename(path)
     while File.exists?(path)
-      if pattern =~ path
+      filename = File.basename(path)
+      if pattern =~ filename
         if $3 == nil
           n = 0
         else
           n = $3.to_i
         end
-        path = $1 + "-" + (n + 1).to_s + $4
+        filename = $1 + "-" + (n + 1).to_s + $4
       else
-        puts "ERROR: internal error when creating filename for #{path}"
+        puts "ERROR: internal error when creating filename for #{filename}"
         exit
       end
+      path = File.dirname(path) + File::SEPARATOR + filename
     end
     puts "NOTE: found a same file name. created #{path}"
     path
