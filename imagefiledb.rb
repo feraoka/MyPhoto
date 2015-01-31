@@ -4,7 +4,7 @@ require 'exifr'
 require 'time'
 require 'date'
 require 'fileutils'
-require 'filedb.rb'
+require './filedb.rb'
 
 class ImageFileDB < FileDB
 

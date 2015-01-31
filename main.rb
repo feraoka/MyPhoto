@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'find'
-require 'imagefiledb.rb'
+require './imagefiledb.rb'
 require 'optparse'
 
 dbfile = 'moved.db'
@@ -11,7 +11,7 @@ OptionParser.new do |opt|
   opt.on('-s path', 'source directory') { |v| conf[:s] = v }
   opt.on('-d path', 'destination directory') { |v| conf[:d] = v }
   opt.on('-v', 'dry run') { |v| conf[:v] = v }
-  opt.on('-c', 'copy rather than move') { |v| conf[:c] = c }
+  opt.on('-c', 'copy rather than move') { |v| conf[:c] = v }
   opt.version = '1.00'
   opt.parse!(ARGV)
 
@@ -26,7 +26,17 @@ end
 srctop = File::expand_path(conf[:s])
 dsttop = File::expand_path(conf[:d])
 
-db = ImageFileDB.new(dsttop + File::SEPARATOR + dbfile)
+dbfilefull = dsttop + File::SEPARATOR + dbfile
+
+if not File.exists?(dbfilefull)
+  puts "Warning: #{dbfilefull} does not exist. create a new databse?"
+  ans = STDIN.gets.chomp
+  if ans.upcase != "Y"
+    exit
+  end
+end
+
+db = ImageFileDB.new(dbfilefull)
 
 Find.find(srctop) do |file|
   next if File.directory?(file)
